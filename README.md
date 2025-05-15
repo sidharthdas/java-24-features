@@ -21,8 +21,7 @@ Gatherer<Student, ?, Student> gatherer = () -> ((state, element, downstream) -> 
                     return downstream.push(element);
                 }
             }
-
-            return true;
+            return true; //If you put is as false, once it not satisfy the condition it will break
         });
 ```
 Using Gatherer of method:
@@ -31,7 +30,7 @@ Gatherer<Student, ?, Student> g = Gatherer.of((state, element, downstream) -> {
             if(element != null && element.age() > 25) {
                 return downstream.push(element);
             }
-            return true;
+            return true; //If you put is as false, once it not satisfy the condition it will break
         });
 ```
 
