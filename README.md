@@ -78,6 +78,13 @@ Gatherer<Integer, List<Integer>, List<Integer>> g = Gatherer.ofSequential(
         System.out.println(l);
 ```
 
+## Combiner:
+
+### Parallel Gatherer:
+
+<img width="1153" alt="image" src="https://github.com/user-attachments/assets/fb4d1d4c-801f-43e7-9325-d4e5c4a288f3" />
+
+
 
 
 
