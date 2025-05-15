@@ -52,6 +52,30 @@ Gatherer<Student, ?, Student> g = Gatherer.of((state, element, downstream) -> {
 Example:
 
 <img width="906" alt="image" src="https://github.com/user-attachments/assets/2724ffb7-6fd8-4898-b4dc-508f44795d59" />
+```
+Gatherer<Integer, List<Integer>, List<Integer>> g = Gatherer.ofSequential(
+                ArrayList::new,
+                (buffer, element, downstream) -> {
+                    buffer.add(element);
+                    if (buffer.size() == 3) {
+                        downstream.push(new ArrayList<>(buffer));
+                        buffer.clear();
+                    }
+                    return true;
+                },
+                //If any leftover is present
+                (buffer, downstream) -> {
+                    if (!buffer.isEmpty()) {
+                        downstream.push(buffer);
+                    }
+                }
+        );
+        List<List<Integer>> l = Stream.of(1,2,3,4,5,6,7,8)
+                .gather(g)
+                .toList();
+
+        System.out.println(l);
+```
 
 
 
