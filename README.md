@@ -25,7 +25,7 @@ Gatherer<Student, ?, Student> gatherer = () -> ((state, element, downstream) -> 
             return true;
         });
 ```
-Using the Gatherer of method:
+Using the Gatherer of method: (Gatherer.of() -> Parallel Execution & Gatherer.ofSequential() -> Sequential Execution)
 ```
 Gatherer<Student, ?, Student> g = Gatherer.of((state, element, downstream) -> {
             if(element != null && element.age() > 25) {
