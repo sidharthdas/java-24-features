@@ -49,6 +49,10 @@ Gatherer<Student, ?, Student> g = Gatherer.of((state, element, downstream) -> {
 ## Finisher:
 <img width="1123" alt="image" src="https://github.com/user-attachments/assets/0c7e2be3-c2c7-4017-bdb3-b8c03796669f" />
 
+Example:
+<img width="906" alt="image" src="https://github.com/user-attachments/assets/2724ffb7-6fd8-4898-b4dc-508f44795d59" />
+
+
 
 
 
