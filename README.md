@@ -84,6 +84,85 @@ Gatherer<Integer, List<Integer>, List<Integer>> g = Gatherer.ofSequential(
 
 <img width="1153" alt="image" src="https://github.com/user-attachments/assets/fb4d1d4c-801f-43e7-9325-d4e5c4a288f3" />
 
+```
+atherer<Integer, AtomicInteger, Integer> gatherer = Gatherer.of(
+                AtomicInteger::new,
+                ((state, element, downstream) -> {
+                    return downstream.push(state.addAndGet(element));
+                }),
+                (s1, s2) -> {
+                    s1.addAndGet(s2.get());
+                    return s1;
+                },
+                (broker, downstream) -> {
+                    downstream.push(broker.get());
+                }
+        );
+
+        var v = List.of(10, 20, 30, 40, 50, 60)
+                .stream()
+                .gather(gatherer)
+                .toList();
+
+        System.out.println(v);
+```
+
+## Interrupt Gatherer
+<img width="1126" alt="image" src="https://github.com/user-attachments/assets/11cbb360-b7fb-4ab0-89be-55534d80b77d" />
+
+#### Important Point:
+
+<img width="596" alt="image" src="https://github.com/user-attachments/assets/b03924f7-0b53-4b61-b5e7-eedead62e8a8" />
+
+
+```
+Gatherer<Integer, ?, Integer> gatherer = Gatherer.ofSequential(
+                ((_, element, downstream) -> {
+                    System.out.println(downstream.isRejecting());
+                    return downstream.push(element);
+                })
+        );
+
+        List<Integer> l = new ArrayList<>();
+        int i = 0;
+        while (i < 1000) {
+            l.add(i);
+            i++;
+        }
+
+        var v = l.stream()
+                .gather(gatherer)
+                .limit(10)
+                .toList();
+```
+
+## Combining 2 or more Gatherer: (using andThen() method)
+
+```
+Gatherer<String, ?, String> gatherer1 = Gatherer.ofSequential(
+                ((state, element, downstream) ->
+                        downstream.push(element.toUpperCase()))
+        );
+
+        Gatherer<String, ?, String> gatherer2 = Gatherer.ofSequential(
+                ((state, element, downstream) -> {
+                    if (element.length() >= 3) {
+                        downstream.push(element);
+                    }
+                    return true;
+                }
+                )
+        );
+
+        var v = Stream.of("java", "python", "c++", "c")
+                .gather(gatherer1.andThen(gatherer2))
+                .toList();
+
+        System.out.println(v);
+
+```
+
+
 
 
 
