@@ -40,11 +40,34 @@ Gatherer<Student, ?, Student> g = Gatherer.of((state, element, downstream) -> {
 1. Initializer (Optional): Create a state to track the information, for example, initialize a list to get the largest number so far
 2. Integrator (Mandatory): To do all the filter & map operations
 3. Combiner (Optional): Merge the states when processing in parallel (parallel stream), for example: Combining 2 lists of the largest integers from different threads
-4. Finisher (Optional): Perform final action after all elements are processed like sending the largest number after checking all the elements
+4. Finisher (Optional): Perform final action after all elements are processed, like sending the largest number after checking all the elements
 
 
 ## Integrator: 
 <img width="1611" alt="image" src="https://github.com/user-attachments/assets/15c5f3f8-b120-4a83-a001-92a2e8385136" />
+
+```
+List<Student> students = List.of(
+                new Student("sid", "a", "dav", 25),
+                new Student("RAM", "a", "dav", 30),
+                new Student("Sita", "b", "dav", 35)
+        );
+
+        Gatherer<Student, ?, Student> g = Gatherer.of((state, element, downstream) -> { // Integrator
+            if(element != null && element.age() > 25) {
+                Student s = new Student(element.name().toUpperCase(), element.section(), element.section(), element.age());
+                return downstream.push(s);
+            }
+            return true;
+        });
+
+        List<Student> aftergatherer = students
+                .stream()
+                .gather(g)
+                .toList();
+
+        System.out.println(aftergatherer);
+```
 
 ## Finisher:
 <img width="1123" alt="image" src="https://github.com/user-attachments/assets/0c7e2be3-c2c7-4017-bdb3-b8c03796669f" />
