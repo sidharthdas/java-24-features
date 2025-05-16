@@ -2,13 +2,13 @@
 # Java 24 Features
 
 ## Stream Gatherer:
-```
-A Gatherer is a component that:
-Takes item from stream
-Transform or filter
-Pass the item to the next 
-To develop your own custom intermediate operation
-```
+
+            1. A Gatherer is a component that:
+            2. Takes item from stream
+            3. Transform or filter
+            4. Pass the item to the next 
+            5. To develop your custom intermediate operation
+
 ### Gatherer is build upon 2 elements: ``` Gatherer interface``` & ``` Gatherers factory class ```
 
 Gatherer Example:
@@ -78,6 +78,69 @@ Gatherer<Integer, List<Integer>, List<Integer>> g = Gatherer.ofSequential(
         System.out.println(l);
 ```
 
+## Initializer:
+
+```
+
+Gatherer<String, ?, String> gatherer1 = Gatherer.ofSequential(
+                ((state, element, downstream) ->
+                        downstream.push(element.toUpperCase()))
+        );
+
+        Gatherer<String, ?, String> gatherer2 = Gatherer.ofSequential(
+                ((state, element, downstream) -> {
+                    if (element.length() >= 3) {
+                        downstream.push(element);
+                    }
+                    return true;
+                }
+                )
+        );
+
+        var v = Stream.of("java", "python", "c++", "c")
+                .gather(gatherer1.andThen(gatherer2))
+                .toList();
+
+        System.out.println(v);
+
+```
+## Finisher:
+
+<img width="1114" alt="image" src="https://github.com/user-attachments/assets/f784823c-378f-4ed0-a5c9-2f959aafd071" />
+
+<img width="867" alt="image" src="https://github.com/user-attachments/assets/cb1ff455-5003-4a4d-8d68-04e7999175bc" />
+
+
+```
+Gatherer<Integer, List<Integer>, List<Integer>> g = Gatherer.ofSequential(
+                ArrayList::new,
+                (buffer, element, downstream) -> {
+                    buffer.add(element);
+                    if (buffer.size() == 3) {
+                        downstream.push(new ArrayList<>(buffer));
+                        buffer.clear();
+                    }
+
+                    return true;
+                },
+
+                //If any left over is present
+                (buffer, downstream) -> {
+                    if (!buffer.isEmpty()) {
+                        downstream.push(buffer);
+                    }
+
+                }
+        );
+
+
+        List<List<Integer>> l = Stream.of(1,2,3,4,5,6,7,8)
+                .gather(g)
+                .toList();
+
+        System.out.println(l);
+```
+
 ## Combiner:
 
 ### Parallel Gatherer:
@@ -86,15 +149,15 @@ Gatherer<Integer, List<Integer>, List<Integer>> g = Gatherer.ofSequential(
 
 ```
 atherer<Integer, AtomicInteger, Integer> gatherer = Gatherer.of(
-                AtomicInteger::new,
-                ((state, element, downstream) -> {
+                AtomicInteger::new, // Initializer
+                ((state, element, downstream) -> { //Integrator
                     return downstream.push(state.addAndGet(element));
                 }),
-                (s1, s2) -> {
+                (s1, s2) -> { // Combiner
                     s1.addAndGet(s2.get());
                     return s1;
                 },
-                (broker, downstream) -> {
+                (broker, downstream) -> { //Finisher
                     downstream.push(broker.get());
                 }
         );
