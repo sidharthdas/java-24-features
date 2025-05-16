@@ -161,7 +161,7 @@ Gatherer<Integer, List<Integer>, List<Integer>> g = Gatherer.ofSequential(
 <img width="1153" alt="image" src="https://github.com/user-attachments/assets/fb4d1d4c-801f-43e7-9325-d4e5c4a288f3" />
 
 ```
-atherer<Integer, AtomicInteger, Integer> gatherer = Gatherer.of(
+Gatherer<Integer, AtomicInteger, Integer> gatherer = Gatherer.of(
                 AtomicInteger::new, // Initializer
                 ((state, element, downstream) -> { //Integrator
                     return downstream.push(state.addAndGet(element));
