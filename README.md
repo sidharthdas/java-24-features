@@ -3,11 +3,11 @@
 
 ## Stream Gatherer:
 
-            1. A Gatherer is a component that:
-            2. Takes item from stream
-            3. Transform or filter
-            4. Pass the item to the next 
-            5. To develop your custom intermediate operation
+            A Gatherer is a component that:
+                        1. Takes item from stream
+                        2. Transform or filter
+                        3. Pass the item to the next 
+                        4. To develop your custom intermediate operation
 
 ### Gatherer is build upon 2 elements: ``` Gatherer interface``` & ``` Gatherers factory class ```
 
