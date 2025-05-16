@@ -104,27 +104,17 @@ Gatherer<Integer, List<Integer>, List<Integer>> g = Gatherer.ofSequential(
 ## Initializer:
 
 ```
+Gatherer<Integer, AtomicInteger, Integer> g = Gatherer.ofSequential(AtomicInteger::new,
+                ((state, number, downstream) -> {
+                        var val = state.addAndGet(number);
+                        return downstream.push(val);
+                }));
 
-Gatherer<String, ?, String> gatherer1 = Gatherer.ofSequential(
-                ((state, element, downstream) ->
-                        downstream.push(element.toUpperCase()))
-        );
-
-        Gatherer<String, ?, String> gatherer2 = Gatherer.ofSequential(
-                ((state, element, downstream) -> {
-                    if (element.length() >= 3) {
-                        downstream.push(element);
-                    }
-                    return true;
-                }
-                )
-        );
-
-        var v = Stream.of("java", "python", "c++", "c")
-                .gather(gatherer1.andThen(gatherer2))
+        var l = Stream.of(10,20,30,40)
+                .gather(g)
                 .toList();
 
-        System.out.println(v);
+        System.out.println(l);
 
 ```
 ## Finisher:
