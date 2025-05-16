@@ -1,7 +1,7 @@
 
 # Java 24 Features
 
-## Stream Gatherer:
+# Stream Gatherer:
 
             A Gatherer is a component that:
                         1. Takes item from stream
